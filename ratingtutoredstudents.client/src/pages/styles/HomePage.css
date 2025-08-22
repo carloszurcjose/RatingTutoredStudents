@@ -1,0 +1,31 @@
+/* in index.css or a global stylesheet */
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    width: 100%;
+    top: 5vh;
+    color: black; /* text color */
+    font-size: 2rem; /* bigger text */
+    font-weight: bold; /* bold */
+    text-align: center; /* center horizontally */
+    font-family: Arial, sans-serif;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.select-student {
+    display: flex;
+    width: 100%;
+/*    height: 5%;*/
+/*    background-color: blue;*/
+    justify-content: flex-start;
+
+}
