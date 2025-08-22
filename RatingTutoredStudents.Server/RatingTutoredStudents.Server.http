@@ -1,0 +1,6 @@
+@RatingTutoredStudents.Server_HostAddress = http://localhost:5196
+
+GET {{RatingTutoredStudents.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
