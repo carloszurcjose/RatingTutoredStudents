@@ -1,5 +1,5 @@
-export const Student {
-    id: numberl;
+export type Student = {
+    id: number;
     first_name: string;
     last_name: string;
-}
+};
