@@ -16,6 +16,7 @@ namespace RatingTutoredStudents.Server.Controllers
         }
 
         [HttpGet]
+        [Route("student/")]
         public async Task<IActionResult> GetStudentInfo( int studentId)
         {
             var studentInfo = await _context.SessionInfos

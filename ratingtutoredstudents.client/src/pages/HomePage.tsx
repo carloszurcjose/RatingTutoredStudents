@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom"; // ⬅️ added
 import type { Student } from "../types/Student";
 import { getStudents } from "./services/HomePageService";
 import "./styles/HomePage.css";
@@ -10,6 +11,8 @@ const HomePage: React.FC = () => {
     const [query, setQuery] = useState("");
     const [sortBy, setSortBy] = useState<keyof Student>("last_name");
     const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+    const navigate = useNavigate(); // ⬅️ added
 
     useEffect(() => {
         let alive = true;
@@ -40,14 +43,13 @@ const HomePage: React.FC = () => {
             const bv = b[sortBy] as unknown;
 
             if (typeof av === "number" && typeof bv === "number") {
-                return (av - bv) * dir;               // numeric compare
+                return (av - bv) * dir;
             }
             const va = String(av ?? "");
             const vb = String(bv ?? "");
             return va.localeCompare(vb, undefined, { numeric: true, sensitivity: "base" }) * dir;
         });
     }, [students, query, sortBy, sortDir]);
-
 
     const toggleSort = (key: keyof Student) => {
         if (key === sortBy) setSortDir(d => (d === "asc" ? "desc" : "asc"));
@@ -96,12 +98,13 @@ const HomePage: React.FC = () => {
                                     Last Name {sortBy === "last_name" ? (sortDir === "asc" ? "▲" : "▼") : ""}
                                 </button>
                             </th>
+                            <th>Actions</th> {/* ⬅️ added */}
                         </tr>
                     </thead>
                     <tbody>
                         {filtered.length === 0 ? (
                             <tr>
-                                <td colSpan={3} className="empty">No students found.</td>
+                                <td colSpan={4} className="empty">No students found.</td> {/* ⬅️ 4 cols now */}
                             </tr>
                         ) : (
                             filtered.map((s) => (
@@ -109,6 +112,15 @@ const HomePage: React.FC = () => {
                                     <td>{s.id}</td>
                                     <td>{s.first_name}</td>
                                     <td>{s.last_name}</td>
+                                    <td>
+                                        <button
+                                            className="view-btn"
+                                            onClick={() => navigate(`/student/${s.id}`)} // ⬅️ navigate with id
+                                            aria-label={`View student ${s.first_name} ${s.last_name}`}
+                                        >
+                                            View
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         )}
