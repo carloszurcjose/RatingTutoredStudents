@@ -1,20 +1,32 @@
 using Microsoft.EntityFrameworkCore;
 using RatingTutoredStudents.Server.Data;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS
+const string AllowFrontend = "AllowFrontend";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowFrontend, policy =>
+        policy
+            .WithOrigins(
+                "https://localhost:63562", // exact frontend origin
+                "http://localhost:63562",
+                "https://localhost:3000",
+                "http://localhost:3000"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+    // .AllowCredentials() // uncomment ONLY if you send cookies/Authorization across origins
+    );
+});
 
-// 1) Read connection string
+// Db + MVC + Swagger
 var connectionString = builder.Configuration.GetConnectionString("StudentInfoConnection");
-// 2) Register DbContext with MySQL provider
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-
-// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -23,7 +35,6 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -32,10 +43,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Apply CORS BEFORE controllers (and before auth)
+app.UseCors(AllowFrontend);
+
+// If you have auth, it goes after CORS:
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapFallbackToFile("/index.html");
 
 app.Run();

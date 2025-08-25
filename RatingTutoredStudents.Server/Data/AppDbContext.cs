@@ -9,11 +9,12 @@ namespace RatingTutoredStudents.Server.Data
             : base(options) { }
 
         public DbSet<Student> Students => Set<Student>();
-
+        public DbSet<SessionInfo> SessionInfos => Set<SessionInfo>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Map Student entity to "students" table
             modelBuilder.Entity<Student>().ToTable("students");
+            modelBuilder.Entity<SessionInfo>().ToTable("session_info");
         }
 
     }
