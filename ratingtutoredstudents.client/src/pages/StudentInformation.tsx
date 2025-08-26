@@ -7,8 +7,8 @@ const StudentInformation: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const idNum = Number(id);
 
-    const [studentSessionInfo, setStudentSessionInfo] = useState < StudentInformationType
-  
+    const [studentSessionInfo, setStudentSessionInfo] = useState<StudentInformationType[]>([]);
+    const [studentName, setStudentName] = useState<String>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -33,6 +33,8 @@ const StudentInformation: React.FC = () => {
             }
         })();
 
+        
+
         return () => { alive = false; };
     }, [id, idNum]); // refetch if route param changes
 
@@ -42,8 +44,14 @@ const StudentInformation: React.FC = () => {
     return (
         <div className="wrapper">
             <div className="title">
-                <p>Student Name: {studentSessionInfo[0].student_id}</p>
+                <p>Student Name: {studentSessionInfo[0].name}</p>
             </div>
+            <p>Averege Effectiveness: </p>
+            <p>Average Attitude: </p>
+            <p>Average Focus:</p>
+            <p>Average Duration: </p>
+            <p>Best strategies to use on this student: </p>
+            <p>Extra comments: </p>
         </div>
     );
 };

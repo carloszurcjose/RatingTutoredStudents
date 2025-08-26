@@ -30,7 +30,7 @@ namespace RatingTutoredStudents.Server.Controllers
         public async Task<IActionResult> GetStudentName(int studentId)
         {
             var studentName = await _service.getNameByStudentId(studentId);
-            return Ok(studentName);
+            return Ok(new { name = studentName });
         }
     }
 }

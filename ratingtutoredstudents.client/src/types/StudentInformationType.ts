@@ -1,5 +1,6 @@
 export type StudentInformationType = {
     id: number;
+    name: String;
     student_id: number;
     area: string;
     effectiveness: number;
