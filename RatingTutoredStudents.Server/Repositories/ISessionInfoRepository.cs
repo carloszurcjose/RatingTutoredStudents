@@ -7,5 +7,6 @@ namespace RatingTutoredStudents.Server.DataBase
     {
         Task<String> getStudentNameById(int id);
         Task<List<SessionInfo>> getStudentSessionInfo(int id);
+        Task<bool> addReport(SessionInfo sessionInfo, CancellationToken ct = default);
     }
 }

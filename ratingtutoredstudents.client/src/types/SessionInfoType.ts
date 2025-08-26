@@ -1,11 +1,10 @@
-export type StudentInformationType = {
-    name: String;
-    student_id: number;
+export type SessionInfoType = {
+    studentId: number;
     area: string;
     effectiveness: number;
     attitude: number;
     focus: number;
-    strategies_used: String;
+    strategiesUsed: String;
     comments: string;
     duration: number;
 };

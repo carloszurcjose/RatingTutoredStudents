@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RatingTutoredStudents.Server.Data;
+using RatingTutoredStudents.Server.Models;
 using RatingTutoredStudents.Server.Services;
 using System.Linq;
 
@@ -8,10 +9,10 @@ namespace RatingTutoredStudents.Server.Controllers
 {
     [ApiController]
     [Route("sessioninfo/")]
-    public class SessionInfoController: ControllerBase
+    public class SessionController: ControllerBase
     {
         SessionInfoService _service;
-        public SessionInfoController(SessionInfoService service)
+        public SessionController(SessionInfoService service)
         {
             _service = service;
         }
@@ -31,6 +32,14 @@ namespace RatingTutoredStudents.Server.Controllers
         {
             var studentName = await _service.getNameByStudentId(studentId);
             return Ok(new { name = studentName });
+        }
+
+        [HttpPost]
+        [Route("StudentSessionReport/")]
+        public async Task<bool> GetStudentReport([FromBody] SessionInfo sessionInfo)
+        {
+            Console.WriteLine(sessionInfo.ToString());
+            return await _service.addReport(sessionInfo);
         }
     }
 }

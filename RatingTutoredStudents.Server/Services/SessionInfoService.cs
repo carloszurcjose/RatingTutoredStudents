@@ -1,4 +1,5 @@
-﻿using RatingTutoredStudents.Server.DataBase;
+﻿using Microsoft.AspNetCore.Mvc;
+using RatingTutoredStudents.Server.DataBase;
 using RatingTutoredStudents.Server.Models;
 
 namespace RatingTutoredStudents.Server.Services
@@ -18,6 +19,11 @@ namespace RatingTutoredStudents.Server.Services
         public async Task<List<SessionInfo>> getStudentSessionInfo(int student_id)
         {
             return await _repo.getStudentSessionInfo(student_id);
+        }
+
+        public async Task<Boolean> addReport(SessionInfo sessionInfo)
+        {
+            return await _repo.addReport(sessionInfo);
         }
     }
 }

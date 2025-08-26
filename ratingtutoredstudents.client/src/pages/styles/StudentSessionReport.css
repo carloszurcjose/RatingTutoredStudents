@@ -28,3 +28,96 @@ html, body, #root {
     /*    background-color: blue;*/
     justify-content: flex-start;
 }
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.question {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.input, .textarea {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
+}
+
+    .input:focus, .textarea:focus {
+        border-color: #6366f1; /* indigo */
+        box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+
+.textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+.star-group {
+    display: inline-flex;
+    gap: 6px;
+    font-size: 1.6rem; /* bigger stars */
+    user-select: none;
+}
+
+.star input {
+    display: none;
+}
+
+.star span {
+    opacity: 0.35;
+    cursor: pointer;
+    transition: transform 0.08s, opacity 0.08s;
+}
+
+.star.active span {
+    opacity: 1;
+}
+
+.star:hover span {
+    transform: scale(1.1);
+}
+
+.btn-primary {
+    align-self: start;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    background: #4f46e5;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.06s ease, filter 0.15s ease;
+}
+
+    .btn-primary:hover {
+        filter: brightness(1.05);
+    }
+
+    .btn-primary:active {
+        transform: translateY(1px);
+    }
+
+/* Optional: helper for screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

@@ -13,6 +13,12 @@ namespace RatingTutoredStudents.Server.DataBase
         {
             _context = context;
         }
+
+        public Task<bool> addReport(SessionInfo sessionInfo)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<String> getStudentNameById(int studentId)
         {
             var rawJoin = await _context.SessionInfos
@@ -26,7 +32,7 @@ namespace RatingTutoredStudents.Server.DataBase
                 }
                 ).FirstOrDefaultAsync();
 
-            return rawJoin.fullName;  
+            return rawJoin.fullName;
         }
 
         public async Task<List<SessionInfo>> getStudentSessionInfo(int id)
@@ -36,6 +42,15 @@ namespace RatingTutoredStudents.Server.DataBase
                 .ToListAsync();
 
             return studentInfo;
+        }
+
+        public async Task<bool> addReport(SessionInfo sessionInfo, CancellationToken ct = default)
+        {
+
+            await _context.SessionInfos.AddAsync(sessionInfo, ct);
+            var rows = await _context.SaveChangesAsync(ct);
+            return rows > 0;
+
         }
     }
 }

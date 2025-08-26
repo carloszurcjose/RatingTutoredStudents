@@ -1,17 +1,23 @@
 ﻿import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getStudentsSessionInfo } from "./services/StudentSessionReportService";
+import { addReportToDB, getStudentsSessionInfo } from "./services/StudentSessionReportService";
+import StarRadio from "../components/StarRadio";
 
 const StudentSessionReport: React.FC = () => {
     const [studentName, setStudentName] = useState<string>("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [area, setArea] = useState<string>("");
     const [effectiveness, setEffectiveness] = useState<number>(0);
-    const [attitude, setAttitude] = useState<string>("");
+    const [attitude, setAttitude] = useState<number>(0);
     const [focus, setFocus] = useState<number>(0);
     const [duration, setDuration] = useState<number>(0);
     const [strategies, setStrategies] = useState<string>("");
     const [comments, setComments] = useState<string>("");
+    const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState("");
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+
 
 
     const navigate = useNavigate();
@@ -47,6 +53,21 @@ const StudentSessionReport: React.FC = () => {
     if (loading) return <p>Loading…</p>;
     if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
+    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+        //e.preventDefault();         // stop page refresh
+        //console.log(effectiveness);
+        //console.log(attitude);
+        //console.log(focus);
+        //console.log(duration);
+        //console.log(strategies);
+        //console.log(comments);
+        addReportToDB(idNum, area, effectiveness, attitude, focus, duration, strategies, comments);
+        
+        // prints to console
+        // alert("Hello");          // uncomment if you want a popup instead
+    };
+
+
     return (
         <div className="wrapper">
             <div className="title">
@@ -54,80 +75,92 @@ const StudentSessionReport: React.FC = () => {
             </div>
 
             <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    // handle saving the form here
-                    console.log({
-                        effectiveness,
-                        attitude,
-                        focus,
-                        duration,
-                        strategies,
-                        comments,
-                    });
-                }}
+                className="form"
+                onSubmit={handleSubmit}
+                    // TODO: POST to your API here
+               
             >
-                <label>
-                    How effective was the session:
+                <div className="area">
+                    <label className="question" htmlFor="duration">
+                        What was the area studied:
+                    </label>
                     <input
-                        type="number"
-                        min="1"
-                        max="10"
-                        value={effectiveness}
-                        onChange={(e) => setEffectiveness(Number(e.target.value))}
+                        id="duration"
+                        className="input"
+                        min={0}
+                        value={area}
+                        onChange={(e) => setArea(e.target.value)}
+                        placeholder="For Loops ?"
                     />
-                </label>
+                </div>
+                <StarRadio
+                    name="effectiveness"
+                    label="How effective was the session:"
+                    value={effectiveness}
+                    onChange={setEffectiveness}
+                />
 
-                <label>
-                    How was the student’s attitude:
-                    <input
-                        type="text"
-                        value={attitude}
-                        onChange={(e) => setAttitude(e.target.value)}
-                    />
-                </label>
+                <StarRadio
+                    name="attitude"
+                    label="How was the student’s attitude:"
+                    value={attitude}
+                    onChange={setAttitude}
+                />
 
-                <label>
-                    How focused was the student:
+                <StarRadio
+                    name="focus"
+                    label="How focused was the student:"
+                    value={focus}
+                    onChange={setFocus}
+                />
+
+                <div className="field">
+                    <label className="question" htmlFor="duration">
+                        How long was the session (minutes):
+                    </label>
                     <input
+                        id="duration"
+                        className="input"
                         type="number"
-                        min="1"
-                        max="10"
-                        value={focus}
-                        onChange={(e) => setFocus(Number(e.target.value))}
-                    />
-                </label>
-
-                <label>
-                    How long was the session (minutes):
-                    <input
-                        type="number"
+                        min={0}
                         value={duration}
                         onChange={(e) => setDuration(Number(e.target.value))}
+                        placeholder="e.g., 45"
                     />
-                </label>
+                </div>
 
-                <label>
-                    What strategies did you use when teaching this student:
+                <div className="field">
+                    <label className="question" htmlFor="strategies">
+                        What strategies did you use when teaching this student:
+                    </label>
                     <textarea
+                        id="strategies"
+                        className="textarea"
                         value={strategies}
                         onChange={(e) => setStrategies(e.target.value)}
+                        placeholder="Describe techniques, scaffolding, examples, etc."
                     />
-                </label>
+                </div>
 
-                <label>
-                    Extra comments:
+                <div className="field">
+                    <label className="question" htmlFor="comments">
+                        Extra comments:
+                    </label>
                     <textarea
+                        id="comments"
+                        className="textarea"
                         value={comments}
                         onChange={(e) => setComments(e.target.value)}
+                        placeholder="Anything else worth noting…"
                     />
-                </label>
+                </div>
 
-                <button type="submit">Submit</button>
+                <button type="submit" className="btn-primary" disabled={submitting}>
+                    {submitting ? "Submitting..." : "Submit"}
+                </button>
             </form>
         </div>
     );
-
-};
+}
 
 export default StudentSessionReport;
