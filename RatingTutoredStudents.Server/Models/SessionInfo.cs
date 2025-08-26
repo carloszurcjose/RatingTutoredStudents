@@ -25,8 +25,12 @@ namespace RatingTutoredStudents.Server.Models
         [Column("focus")]
         public int Focus { get; set; }
 
+        [Column("strategies_used")]
+            public String? StrategiesUded { get; set; }
+
         [Column("comments")]
         public string? Comments { get; set; }
+
 
         // Make nullable if the DB allows NULLs: int?
         [Column("duration")]

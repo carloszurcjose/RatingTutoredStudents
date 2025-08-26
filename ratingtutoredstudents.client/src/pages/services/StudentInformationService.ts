@@ -30,6 +30,7 @@ export async function getStudentsSessionInfo(student_id: number): Promise<Studen
         effectiveness: Number(r.effectiveness),
         attitude: Number(r.attitude),
         focus: Number(r.focus),
+        strategies_used: r.strategies_used,
         comments: r.comments,
         duration: Number(r.duration)
     }));

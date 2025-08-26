@@ -115,10 +115,19 @@ const HomePage: React.FC = () => {
                                     <td>
                                         <button
                                             className="view-btn"
-                                            onClick={() => navigate(`/student/${s.id}`)} // ⬅️ navigate with id
+                                            onClick={() => navigate(`/student/report/${s.id}`)} // ⬅️ navigate with id
                                             aria-label={`View student ${s.first_name} ${s.last_name}`}
                                         >
                                             View
+                                        </button>
+
+                                        <button
+                                            className="add-btn"
+                                            onClick={() => navigate(`/student/addReport/${s.id}`)}
+                                            aria-label={`Add report for ${s.first_name} ${s.last_name}`}
+                                            style={{ marginLeft: "0.5rem" }} // space between buttons
+                                        >
+                                            Add Report
                                         </button>
                                     </td>
                                 </tr>

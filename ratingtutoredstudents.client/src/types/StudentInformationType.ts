@@ -6,6 +6,7 @@ export type StudentInformationType = {
     effectiveness: number;
     attitude: number;
     focus: number;
+    strategies_used: String;
     comments: string;
     duration: number;
 };
