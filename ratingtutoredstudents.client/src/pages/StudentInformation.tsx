@@ -7,7 +7,8 @@ const StudentInformation: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const idNum = Number(id);
 
-    const [studentSessionInfo, setStudentSessionInfo] = useState<StudentInformationType[]>([]);
+    const [studentSessionInfo, setStudentSessionInfo] = useState < StudentInformationType
+  
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 

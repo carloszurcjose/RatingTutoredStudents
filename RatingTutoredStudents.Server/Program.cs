@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using RatingTutoredStudents.Server.Data;
+using RatingTutoredStudents.Server.DataBase;
+using RatingTutoredStudents.Server.Repositories;
+using RatingTutoredStudents.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,28 +13,38 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: AllowFrontend, policy =>
         policy
             .WithOrigins(
-                "https://localhost:63562", // exact frontend origin
+                "https://localhost:63562",
                 "http://localhost:63562",
                 "https://localhost:3000",
                 "http://localhost:3000"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
-    // .AllowCredentials() // uncomment ONLY if you send cookies/Authorization across origins
+    // .AllowCredentials() // enable only if sending cookies/Authorization
     );
 });
 
-// Db + MVC + Swagger
+// DbContext
 var connectionString = builder.Configuration.GetConnectionString("StudentInfoConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+// MVC + Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Repositories
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<ISessionInfoRepository, SessionInfoRepository>();
+
+// Services (register interface -> implementation)
+builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<SessionInfoService>();
+
 var app = builder.Build();
 
+// Static files for SPA (if you serve React from the same app)
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -43,13 +56,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Apply CORS BEFORE controllers (and before auth)
 app.UseCors(AllowFrontend);
 
-// If you have auth, it goes after CORS:
 app.UseAuthorization();
 
 app.MapControllers();
+
+// If you serve a SPA, fallback to index.html
 app.MapFallbackToFile("/index.html");
 
 app.Run();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RatingTutoredStudents.Server.Data;
+using RatingTutoredStudents.Server.Services;
 using System.Linq;
 
 namespace RatingTutoredStudents.Server.Controllers
@@ -9,21 +10,27 @@ namespace RatingTutoredStudents.Server.Controllers
     [Route("sessioninfo/")]
     public class SessionInfoController: ControllerBase
     {
-        AppDbContext _context;
-        public SessionInfoController(AppDbContext context)
+        SessionInfoService _service;
+        public SessionInfoController(SessionInfoService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
         [Route("student/")]
         public async Task<IActionResult> GetStudentInfo( int studentId)
         {
-            var studentInfo = await _context.SessionInfos
-                .Where(c => c.StudentId == studentId)  // NOTE: == not =
-                .ToListAsync();
+            var studentInfo = await _service.getStudentSessionInfo(studentId);
 
             return Ok(studentInfo);
+        }
+
+        [HttpGet]
+        [Route("GetStudentName/")]
+        public async Task<IActionResult> GetStudentName(int studentId)
+        {
+            var studentName = await _service.getNameByStudentId(studentId);
+            return Ok(studentName);
         }
     }
 }

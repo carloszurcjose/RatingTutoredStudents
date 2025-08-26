@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using RatingTutoredStudents.Server.Data;
+using RatingTutoredStudents.Server.Models;
 using System.Linq;
 
 namespace RatingTutoredStudents.Server.DataBase
@@ -12,7 +13,7 @@ namespace RatingTutoredStudents.Server.DataBase
         {
             _context = context;
         }
-        public async Task<string> getStudentNameById(int studentId)
+        public async Task<String> getStudentNameById(int studentId)
         {
             var rawJoin = await _context.SessionInfos
                 .Join(
@@ -25,8 +26,16 @@ namespace RatingTutoredStudents.Server.DataBase
                 }
                 ).FirstOrDefaultAsync();
 
-            return rawJoin.fullName;
-            
+            return rawJoin.fullName;  
+        }
+
+        public async Task<List<SessionInfo>> getStudentSessionInfo(int id)
+        {
+            var studentInfo = await _context.SessionInfos
+                .Where(c => c.StudentId == id)  // NOTE: == not =
+                .ToListAsync();
+
+            return studentInfo;
         }
     }
 }
