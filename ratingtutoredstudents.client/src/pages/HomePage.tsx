@@ -78,6 +78,10 @@ const HomePage: React.FC = () => {
                     onChange={(e) => setQuery(e.target.value)}
                 />
             </div>
+            <button onClick={() => navigate("/student/addStudent")}>
+                add
+            </button>
+
 
             <div className="table-wrap">
                 <table className="table">
