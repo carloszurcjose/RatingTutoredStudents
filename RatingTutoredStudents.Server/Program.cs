@@ -29,7 +29,7 @@ var connectionString = builder.Configuration.GetConnectionString("StudentInfoCon
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// MVC + Swagger
+// MVC + Swaggerd
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
