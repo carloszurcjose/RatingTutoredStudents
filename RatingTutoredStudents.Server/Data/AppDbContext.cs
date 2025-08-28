@@ -10,6 +10,7 @@ namespace RatingTutoredStudents.Server.Data
 
         public DbSet<Student> Students => Set<Student>();
         public DbSet<SessionInfo> SessionInfos => Set<SessionInfo>();
+        public DbSet<StudentInfo> StudentInfos => Set<StudentInfo>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Map Student entity to "students" table

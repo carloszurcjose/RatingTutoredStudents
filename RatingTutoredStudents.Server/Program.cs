@@ -37,10 +37,12 @@ builder.Services.AddSwaggerGen();
 // Repositories
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ISessionInfoRepository, SessionInfoRepository>();
+builder.Services.AddScoped<IStudentInfoRepository, StudentInfoRepository>();
 
 // Services (register interface -> implementation)
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<SessionInfoService>();
+builder.Services.AddScoped<StudentInfoService>();
 
 var app = builder.Build();
 
