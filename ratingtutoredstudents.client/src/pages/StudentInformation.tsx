@@ -7,7 +7,7 @@ const StudentInformation: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const idNum = Number(id);
 
-    const [studentSessionInfo, setStudentSessionInfo] = useState<StudentInformationType[]>([]);
+    const [studentSessionInfo, setStudentSessionInfo] = useState<StudentInformationType>();
     const [studentName, setStudentName] = useState<String>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -43,17 +43,22 @@ const StudentInformation: React.FC = () => {
 
     return (
         <div className="wrapper">
-            <div className="title">
-                <p>Student Name: {studentSessionInfo[0].name}</p>
-            </div>
-            <p>Averege Effectiveness: </p>
-            <p>Average Attitude: </p>
-            <p>Average Focus:</p>
-            <p>Average Duration: </p>
-            <p>Best strategies to use on this student: </p>
-            <p>Extra comments: </p>
+            {studentSessionInfo && (
+                <>
+                    <div className="title">
+                        <p>Student Name: {studentSessionInfo.name}</p>
+                    </div>
+                    <p>Average Effectiveness: {studentSessionInfo.effectiveness}</p>
+                    <p>Average Attitude: {studentSessionInfo.attitude}</p>
+                    <p>Average Focus: {studentSessionInfo.focus}</p>
+                    <p>Average Duration: {studentSessionInfo.duration}</p>
+                    <p>Best strategies: {studentSessionInfo.strategies_used}</p>
+                    <p>Extra comments: {studentSessionInfo.comments}</p>
+                </>
+            )}
         </div>
     );
+
 };
 
 export default StudentInformation;

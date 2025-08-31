@@ -22,5 +22,13 @@ namespace RatingTutoredStudents.Server.Controllers
             var addStudent = await _service.addStudent(studentInfo);
             return Ok(addStudent);
         }
+
+        [HttpGet]
+        [Route("GetAllStudents")]
+        public async Task<IActionResult> GetAllStudents()
+        {
+            var students = await _service.getAllStudents();
+            return Ok(students);
+        }
     }
 }

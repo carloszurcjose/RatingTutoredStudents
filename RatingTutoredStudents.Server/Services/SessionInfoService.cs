@@ -16,12 +16,12 @@ namespace RatingTutoredStudents.Server.Services
         {
             return await _repo.getStudentNameById(student_id);
         }
-        public async Task<List<SessionInfo>> getStudentSessionInfo(int student_id)
+        public async Task<SessionInfo> getStudentSessionsInfo(int student_id)
         {
-            return await _repo.getStudentSessionInfo(student_id);
+            return await _repo.getStudentSessionsInfo(student_id);
         }
 
-        public async Task<Boolean> addReport(SessionInfo sessionInfo)
+        public async Task<bool> addReport(SessionInfo sessionInfo)
         {
             return await _repo.addReport(sessionInfo);
         }

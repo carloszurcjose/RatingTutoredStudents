@@ -18,6 +18,22 @@ const StudentSessionReport: React.FC = () => {
     const [submitError, setSubmitError] = useState("");
     const [submitSuccess, setSubmitSuccess] = useState(false);
 
+    // add near other useState lines
+    type LearningStyle =
+        | "Scaffolding"
+        | "SocraticQuestioning"
+        | "ActiveRecall"
+        | "SpacedRepetition"
+        | "Visualization"
+        | "WorkedExamples"
+        | "PeerTeaching"
+        | "ErrorAnalysis"
+        | "Gamification"
+        | "RealWorldExamples"
+        | "Mixed";
+
+    const [preferredLearningStyle, setPreferredLearningStyle] = useState<LearningStyle | "">("");
+
 
 
     const navigate = useNavigate();
@@ -61,7 +77,8 @@ const StudentSessionReport: React.FC = () => {
         //console.log(duration);
         //console.log(strategies);
         //console.log(comments);
-        addReportToDB(idNum, area, effectiveness, attitude, focus, duration, strategies, comments);
+        addReportToDB(idNum, area, effectiveness, attitude, focus, duration, preferredLearningStyle, comments);
+        navigate("/");
         
         // prints to console
         // alert("Hello");          // uncomment if you want a popup instead
@@ -130,17 +147,30 @@ const StudentSessionReport: React.FC = () => {
                 </div>
 
                 <div className="field">
-                    <label className="question" htmlFor="strategies">
-                        What strategies did you use when teaching this student:
+                    <label className="question" htmlFor="preferred_learning_style">
+                        Strategy used when teaching this student:
                     </label>
-                    <textarea
-                        id="strategies"
-                        className="textarea"
-                        value={strategies}
-                        onChange={(e) => setStrategies(e.target.value)}
-                        placeholder="Describe techniques, scaffolding, examples, etc."
-                    />
+                    <select
+                        id="preferred_learning_style"
+                        className="input"
+                        value={preferredLearningStyle}
+                        onChange={(e) => setPreferredLearningStyle(e.target.value as LearningStyle | "")}
+                    >
+                        <option value="">Select…</option>
+                        <option value="Scaffolding">Scaffolding</option>
+                        <option value="SocraticQuestioning">Socratic Questioning</option>
+                        <option value="ActiveRecall">Active Recall</option>
+                        <option value="SpacedRepetition">Spaced Repetition</option>
+                        <option value="Visualization">Visualization</option>
+                        <option value="WorkedExamples">Worked Examples</option>
+                        <option value="PeerTeaching">Peer Teaching</option>
+                        <option value="ErrorAnalysis">Error Analysis</option>
+                        <option value="Gamification">Gamification</option>
+                        <option value="RealWorldExamples">Real World Examples</option>
+                        <option value="Mixed">Mixed</option>
+                    </select>
                 </div>
+
 
                 <div className="field">
                     <label className="question" htmlFor="comments">

@@ -1,4 +1,5 @@
 import type { StudentInformationType } from "../../types/StudentInformationType"
+import StudentInformation from "../StudentInformation";
 
 async function getStudentsSessionInfoFromDb(student_id: number) {
     console.log("Hereee");
@@ -17,21 +18,30 @@ async function getStudentName(student_id: number) {
     return response.json();
 }
 
-export async function getStudentsSessionInfo(student_id: number): Promise<StudentInformationType[]> {
+export async function getStudentsSessionInfo(student_id: number): Promise<StudentInformationType> {
     const raw = await getStudentsSessionInfoFromDb(student_id);
     const name = await getStudentName(student_id);
-    console.log(name)
-    console.log(raw);
-    return raw.map((r: any) => ({
-        id: Number(r.id),
+
+    //name: String;
+    //student_id: number;
+    //area: string;
+    //effectiveness: number;
+    //attitude: number;
+    //focus: number;
+    //strategies_used: String;
+    //comments: string;
+    //duration: number;
+
+    var student: StudentInformationType = {
         name: name.name,
-        student_id: Number(r.studentId),
-        area: r.area,
-        effectiveness: Number(r.effectiveness),
-        attitude: Number(r.attitude),
-        focus: Number(r.focus),
-        strategies_used: r.strategies_used,
-        comments: r.comments,
-        duration: Number(r.duration)
-    }));
+        student_id : student_id,
+        area: raw.area,
+        effectiveness: raw.effectiveness,
+        attitude: raw.attitude,
+        focus: raw.focus,
+        strategies_used: raw.strategiesUsed,
+        comments: raw.comments,
+        duration: raw.duration
+    }
+    return student;
 }

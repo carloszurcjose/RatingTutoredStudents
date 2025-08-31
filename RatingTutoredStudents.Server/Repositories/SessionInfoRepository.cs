@@ -1,7 +1,7 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RatingTutoredStudents.Server.Data;
 using RatingTutoredStudents.Server.Models;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace RatingTutoredStudents.Server.DataBase
@@ -21,28 +21,119 @@ namespace RatingTutoredStudents.Server.DataBase
 
         public async Task<String> getStudentNameById(int studentId)
         {
-            var rawJoin = await _context.SessionInfos
-                .Join(
-                _context.Students,
-                session => session.StudentId,
-                student => student.id,
-                (session, student) => new
-                {
-                    fullName = student.first_name + " " + student.last_name
-                }
-                ).FirstOrDefaultAsync();
+            var name = await _context.StudentInfos
+                .AsNoTracking()
+                .Where(c => c.id == studentId)
+                .Select(c => new { FullName = ((c.firstName ?? "") + " " + (c.lastName ?? "")).Trim() })
+                .FirstOrDefaultAsync();
 
-            return rawJoin.fullName;
+            return name.FullName;
+
         }
 
-        public async Task<List<SessionInfo>> getStudentSessionInfo(int id)
+        public async Task<SessionInfo> getStudentSessionsInfo(int id)
         {
-            var studentInfo = await _context.SessionInfos
-                .Where(c => c.StudentId == id)  // NOTE: == not =
+            var studentInfos = await _context.SessionInfos
+                .Where(c => c.StudentId == id)
                 .ToListAsync();
 
-            return studentInfo;
+            // Handle "no sessions" gracefully
+            if (studentInfos.Count == 0)
+            {
+                return new SessionInfo
+                {
+                    StudentId = id,
+                    StrategiesUsed = "",
+                    Area = "",
+                    Effectiveness = 0,
+                    Attitude = 0,
+                    Focus = 0,
+                    Duration = 0
+                };
+            }
+
+            // Helper to normalize strings and avoid null keys
+            static string Norm(string? s) => string.IsNullOrWhiteSpace(s) ? "Unknown" : s.Trim();
+
+            var bestStrategy = new SessionInfo
+            {
+                Id = studentInfos[0].Id,
+                StudentId = studentInfos[0].StudentId
+            };
+
+            var learningStyles = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Scaffolding"] = 0,
+                ["SocraticQuestioning"] = 0,
+                ["ActiveRecall"] = 0,
+                ["SpacedRepetition"] = 0,
+                ["Visualization"] = 0,
+                ["WorkedExamples"] = 0,
+                ["PeerTeaching"] = 0,
+                ["ErrorAnalysis"] = 0,
+                ["Gamification"] = 0,
+                ["RealWorldExamples"] = 0,
+                ["Mixed"] = 0,
+                ["Other"] = 0 // catch-all for unexpected values
+            };
+
+            var areas = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            long totalEffectiveness = 0;
+            long totalAttitude = 0;
+            long totalFocus = 0;
+            long totalDuration = 0;
+            int numEntries = 0;
+
+            foreach (var s in studentInfos)
+            {
+                // --- strategies ---
+                var strat = Norm(s.StrategiesUsed);
+                if (learningStyles.ContainsKey(strat))
+                    learningStyles[strat]++;
+                else
+                    learningStyles["Other"]++;
+
+                // --- areas ---
+                var area = Norm(s.Area);
+                areas[area] = areas.TryGetValue(area, out var count) ? count + 1 : 1;
+
+                // --- integer fields (averages) ---
+                totalEffectiveness += s.Effectiveness;
+                totalAttitude += s.Attitude;
+                totalFocus += s.Focus;
+                totalDuration += s.Duration;
+
+                numEntries++;
+            }
+
+            // --- pick most-used strategies (ties allowed), ignore zero-only case ---
+            int maxStrat = learningStyles.Values.DefaultIfEmpty(0).Max();
+            var topStrats = learningStyles
+                .Where(kv => kv.Value == maxStrat && kv.Value > 0)
+                .Select(kv => kv.Key);
+
+            // --- pick most-used areas (ties allowed), ignore zero-only case ---
+            int maxArea = areas.Values.DefaultIfEmpty(0).Max();
+            var topAreas = areas
+                .Where(kv => kv.Value == maxArea && kv.Value > 0)
+                .Select(kv => kv.Key);
+
+            bestStrategy.StrategiesUsed = string.Join(", ", topStrats);
+            bestStrategy.Area = string.Join(", ", topAreas);
+
+            // --- averages (integer) ---
+            if (numEntries > 0)
+            {
+                bestStrategy.Effectiveness = (int)(totalEffectiveness / numEntries);
+                bestStrategy.Attitude = (int)(totalAttitude / numEntries);
+                bestStrategy.Focus = (int)(totalFocus / numEntries);
+                bestStrategy.Duration = (int)(totalDuration / numEntries);
+            }
+
+            return bestStrategy;
         }
+
 
         public async Task<bool> addReport(SessionInfo sessionInfo, CancellationToken ct = default)
         {

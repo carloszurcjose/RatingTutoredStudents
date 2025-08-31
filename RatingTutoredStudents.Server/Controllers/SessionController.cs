@@ -21,7 +21,7 @@ namespace RatingTutoredStudents.Server.Controllers
         [Route("student/")]
         public async Task<IActionResult> GetStudentInfo( int studentId)
         {
-            var studentInfo = await _service.getStudentSessionInfo(studentId);
+            var studentInfo = await _service.getStudentSessionsInfo(studentId);
 
             return Ok(studentInfo);
         }

@@ -2,7 +2,7 @@ import type { Student } from "../../types/Student"
 
 async function getStudentsFromDb() {
     console.log("Hereee");
-    const response = await fetch("https://localhost:7137/Students/GetAllStudents");
+    const response = await fetch("https://localhost:7137/addstudent/GetAllStudents");
     if (!response.ok) {
         throw new Error("Failed to fetch students");
     }

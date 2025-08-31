@@ -8,6 +8,8 @@ const AddStudent: React.FC = () => {
     const navigate = useNavigate();
 
     const [form, setForm] = useState<NewStudentType>({
+        first_name: "",
+        last_name: "",
         age: null,
         classification: "",
         major: "",
@@ -73,7 +75,7 @@ const AddStudent: React.FC = () => {
 
             setMsg({ type: "ok", text: "Student added successfully." });
             // Optional: navigate back to list after a moment
-            setTimeout(() => navigate("/student/list"), 800);
+            setTimeout(() => navigate("/"), 800);
         } catch (err) {
             setMsg({
                 type: "err",
@@ -82,9 +84,8 @@ const AddStudent: React.FC = () => {
         } finally {
             setSubmitting(false);
         }
-        navigate(`/`)
     }
-    };
+    
 
     return (
         <div style={{ maxWidth: 640, margin: "24px auto", padding: 16 }}>
@@ -210,10 +211,16 @@ const AddStudent: React.FC = () => {
                         onChange={onChange}
                     >
                         <option value="">Select…</option>
-                        <option value="Visual">Visual</option>
-                        <option value="Auditory">Auditory</option>
-                        <option value="Reading/Writing">Reading/Writing</option>
-                        <option value="Kinesthetic">Kinesthetic</option>
+                        <option value="Scaffolding">Scaffolding</option>
+                        <option value="SocraticQuestioning">Socratic Questioning</option>
+                        <option value="ActiveRecall">Active Recall</option>
+                        <option value="SpacedRepetition">Spaced Repitition</option>
+                        <option value="Visualization">Visualization</option>
+                        <option value="WorkedExamples">Worked Examples </option>
+                        <option value="PeerTeaching">Peer Teaching</option>
+                        <option value="ErrorAnalysis">Error Analysis</option>
+                        <option value="Gamification">Gamification</option>
+                        <option value="RealWorldExamples">Real World Examples</option>
                         <option value="Mixed">Mixed</option>
                     </select>
                 </label>

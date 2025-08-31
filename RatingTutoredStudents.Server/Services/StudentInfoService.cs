@@ -16,5 +16,10 @@ namespace RatingTutoredStudents.Server.Services
         {
             return await _repository.addStudent(studentInfo);
         }
+
+        public async Task<List<StudentInfo>> getAllStudents()
+        {
+            return await _repository.getAllStudents();
+        }
     }
 }

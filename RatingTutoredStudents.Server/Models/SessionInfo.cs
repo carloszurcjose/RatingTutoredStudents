@@ -26,7 +26,7 @@ namespace RatingTutoredStudents.Server.Models
         public int Focus { get; set; }
 
         [Column("strategies_used")]
-            public String? StrategiesUsed { get; set; }
+        public string? StrategiesUsed { get; set; }
 
         [Column("comments")]
         public string? Comments { get; set; }

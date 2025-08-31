@@ -6,7 +6,7 @@ namespace RatingTutoredStudents.Server.DataBase
     public interface ISessionInfoRepository
     {
         Task<String> getStudentNameById(int id);
-        Task<List<SessionInfo>> getStudentSessionInfo(int id);
+        Task<SessionInfo> getStudentSessionsInfo(int id);
         Task<bool> addReport(SessionInfo sessionInfo, CancellationToken ct = default);
     }
 }
