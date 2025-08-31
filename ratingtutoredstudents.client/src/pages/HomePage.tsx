@@ -1,8 +1,20 @@
-﻿import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ⬅️ added
+﻿// src/pages/HomePage.tsx (MUI version)
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Student } from "../types/Student";
 import { getStudents } from "./services/HomePageService";
-import "./styles/HomePage.css";
+
+// MUI
+import {
+    Container, Paper, Typography, TextField, InputAdornment,
+    TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
+    TableSortLabel, IconButton, Button, Stack, Box, CircularProgress, Alert, Tooltip
+} from "@mui/material";
+
+import SearchIcon from "@mui/icons-material/Search";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import AddIcon from "@mui/icons-material/Add";
 
 const HomePage: React.FC = () => {
     const [students, setStudents] = useState<Student[]>([]);
@@ -12,7 +24,7 @@ const HomePage: React.FC = () => {
     const [sortBy, setSortBy] = useState<keyof Student>("last_name");
     const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
-    const navigate = useNavigate(); // ⬅️ added
+    const navigate = useNavigate();
 
     useEffect(() => {
         let alive = true;
@@ -59,88 +71,131 @@ const HomePage: React.FC = () => {
         }
     };
 
-    if (loading) return <p>Loading students…</p>;
-    if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
+    if (loading) {
+        return (
+            <Container maxWidth="lg">
+                <Box display="flex" alignItems="center" justifyContent="center" minHeight="40vh">
+                    <CircularProgress />
+                </Box>
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container maxWidth="lg">
+                <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
+            </Container>
+        );
+    }
 
     return (
-        <div className="wrapper">
-            <div className="title"><p>Welcome Tutors</p></div>
+        <Container maxWidth="lg" sx={{ py: 3 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ xs: "stretch", sm: "center" }} justifyContent="space-between" mb={2}>
+                <Typography variant="h5">Welcome Tutors</Typography>
 
-            <div className="select-student">
-                <label htmlFor="student-search" className="label">
-                    Search for students
-                </label>
-                <input
-                    id="student-search"
-                    className="search-input"
-                    placeholder="Type a name…"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                />
-            </div>
-            <button onClick={() => navigate("/student/addStudent")}>
-                add
-            </button>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ xs: "stretch", sm: "center" }}>
+                    <TextField
+                        id="student-search"
+                        placeholder="Search students…"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                        size="small"
+                    />
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={() => navigate("/student/addStudent")}
+                    >
+                        Add Student
+                    </Button>
+                </Stack>
+            </Stack>
 
+            <Paper elevation={2}>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sortDirection={sortBy === "id" ? sortDir : false}>
+                                    <TableSortLabel
+                                        active={sortBy === "id"}
+                                        direction={sortBy === "id" ? sortDir : "asc"}
+                                        onClick={() => toggleSort("id")}
+                                    >
+                                        ID
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell sortDirection={sortBy === "first_name" ? sortDir : false}>
+                                    <TableSortLabel
+                                        active={sortBy === "first_name"}
+                                        direction={sortBy === "first_name" ? sortDir : "asc"}
+                                        onClick={() => toggleSort("first_name")}
+                                    >
+                                        First Name
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell sortDirection={sortBy === "last_name" ? sortDir : false}>
+                                    <TableSortLabel
+                                        active={sortBy === "last_name"}
+                                        direction={sortBy === "last_name" ? sortDir : "asc"}
+                                        onClick={() => toggleSort("last_name")}
+                                    >
+                                        Last Name
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell align="right">Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
 
-            <div className="table-wrap">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                <button className="th-btn" onClick={() => toggleSort("id")}>
-                                    ID {sortBy === "id" ? (sortDir === "asc" ? "▲" : "▼") : ""}
-                                </button>
-                            </th>
-                            <th>
-                                <button className="th-btn" onClick={() => toggleSort("first_name")}>
-                                    First Name {sortBy === "first_name" ? (sortDir === "asc" ? "▲" : "▼") : ""}
-                                </button>
-                            </th>
-                            <th>
-                                <button className="th-btn" onClick={() => toggleSort("last_name")}>
-                                    Last Name {sortBy === "last_name" ? (sortDir === "asc" ? "▲" : "▼") : ""}
-                                </button>
-                            </th>
-                            <th>Actions</th> {/* ⬅️ added */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filtered.length === 0 ? (
-                            <tr>
-                                <td colSpan={4} className="empty">No students found.</td> {/* ⬅️ 4 cols now */}
-                            </tr>
-                        ) : (
-                            filtered.map((s) => (
-                                <tr key={s.id}>
-                                    <td>{s.id}</td>
-                                    <td>{s.first_name}</td>
-                                    <td>{s.last_name}</td>
-                                    <td>
-                                        <button
-                                            className="view-btn"
-                                            onClick={() => navigate(`/student/report/${s.id}`)} // ⬅️ navigate with id
-                                            aria-label={`View student ${s.first_name} ${s.last_name}`}
-                                        >
-                                            View
-                                        </button>
-
-                                        <button
-                                            className="add-btn"
-                                            onClick={() => navigate(`/student/addReport/${s.id}`)}
-                                            aria-label={`Add report for ${s.first_name} ${s.last_name}`}
-                                            style={{ marginLeft: "0.5rem" }} // space between buttons
-                                        >
-                                            Add Report
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                        <TableBody>
+                            {filtered.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={4}>
+                                        <Typography variant="body2" color="text.secondary">
+                                            No students found.
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                filtered.map((s) => (
+                                    <TableRow key={s.id} hover>
+                                        <TableCell>{s.id}</TableCell>
+                                        <TableCell>{s.first_name}</TableCell>
+                                        <TableCell>{s.last_name}</TableCell>
+                                        <TableCell align="right">
+                                            <Tooltip title={`View ${s.first_name} ${s.last_name}`}>
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => navigate(`/student/report/${s.id}`)}
+                                                >
+                                                    <VisibilityIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title={`Add report for ${s.first_name} ${s.last_name}`}>
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => navigate(`/student/addReport/${s.id}`)}
+                                                >
+                                                    <NoteAddIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+        </Container>
     );
 };
 
