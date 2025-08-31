@@ -130,8 +130,41 @@ namespace RatingTutoredStudents.Server.DataBase
                 bestStrategy.Focus = (int)(totalFocus / numEntries);
                 bestStrategy.Duration = (int)(totalDuration / numEntries);
             }
+            // put this after the foreach and before 'return bestStrategy;'
+            var latestComment = studentInfos
+                .OrderByDescending(s => s.Id) // or a Date field if you have it
+                .Select(s => s.Comments)
+                .FirstOrDefault(c => !string.IsNullOrWhiteSpace(c));
 
+            bestStrategy.Comments = latestComment ?? "";
+            var topComments = studentInfos
+                .Select(s => s.Comments)
+                .Where(c => !string.IsNullOrWhiteSpace(c))
+                .Select(c => c!.Trim())
+                .GroupBy(c => c, StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(g => g.Count())
+                .ThenBy(g => g.Key) // stable order for ties
+                .Take(3)
+                .Select(g => $"{g.Key} (x{g.Count()})");
+
+            bestStrategy.Comments = string.Join(" | ", topComments);
+
+
+            var uniqueComments = studentInfos
+                .Select(s => s.Comments)
+                .Where(c => !string.IsNullOrWhiteSpace(c))
+                .Select(c => c!.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var joined = string.Join(" | ", uniqueComments);
+            bestStrategy.Comments = joined.Length > 800 ? joined[..800] + "…" : joined;
+
+            // Optional: cap to prevent huge strings written to DB/JSON
+            // e.g., after computing averages and top areas/strategies
+            bestStrategy.Comments = latestComment ?? ""; // or whichever approach you pick
             return bestStrategy;
+
         }
 
 
